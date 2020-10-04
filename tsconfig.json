@@ -36,6 +36,17 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".storybook",
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "options": {
+        "parser": "babel-ts"
+      }
+    }
   ]
 }

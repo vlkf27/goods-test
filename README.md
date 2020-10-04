@@ -1,21 +1,16 @@
-# goods-test
+# Test
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Start app
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+npm start
 ```
 
-### Run your unit tests
+### Run unit tests
 ```
 npm run test:unit
 ```
@@ -24,6 +19,3 @@ npm run test:unit
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
