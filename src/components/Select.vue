@@ -1,19 +1,27 @@
 <template lang="pug">
   .select(
-    :class="{ opened }",
+    :class="{ opened, selected }",
     @click.stop="open"
   )
-    .placeholder {{ placeholder }}
+    .placeholder {{ selectedText }}
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
-      Option First
-      Option Second
-      Option Third
+      div(
+        v-for="option in options",
+        :key="getItemValue(option)",
+        @click.stop="pick(option)"
+      )
+        Option {{ getItemText(option) }}
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop, Model, Emit } from "vue-property-decorator";
 import Option from "@/components/Option.vue";
+
+type Primitive = string | number;
+
+type ObjectItem = { [key: string]: Primitive };
+type OptionItem = Primitive | ObjectItem;
 
 @Component({
   components: {
@@ -21,10 +29,48 @@ import Option from "@/components/Option.vue";
   }
 })
 export default class Select extends Vue {
+  @Prop({ default: () => [], type: Array }) readonly options!: OptionItem[];
+
   @Prop({ default: "Pick one", type: String })
   readonly placeholder!: string;
 
+  @Prop({ default: "label", type: String })
+  readonly labelKey!: keyof OptionItem;
+
+  @Prop({ default: "value", type: String })
+  readonly valueKey!: keyof OptionItem;
+
+  @Model("change", { type: [String, Number] })
+  readonly value!: Primitive;
+
   opened = false;
+
+  get selected() {
+    return this.options.find(
+      option =>
+        (option as ObjectItem)?.[this.valueKey] === this.value ||
+        option === this.value
+    );
+  }
+
+  get selectedText() {
+    return this.selected?.[this.labelKey] || this.selected || this.placeholder;
+  }
+
+  getItemValue(item: OptionItem) {
+    return item?.[this.valueKey] || item;
+  }
+
+  getItemText(item: OptionItem) {
+    return item?.[this.labelKey] || item;
+  }
+
+  @Emit("change")
+  @Emit("input")
+  pick(item: OptionItem) {
+    this.close();
+    return this.getItemValue(item);
+  }
 
   open() {
     this.opened = true;
@@ -75,6 +121,14 @@ $selectRadius: 3px;
       transform: translateY(-50%) rotate(-180deg);
     }
   }
+  &.selected {
+    .placeholder {
+      opacity: 1;
+    }
+  }
+}
+.placeholder {
+  opacity: 0.5;
 }
 .arrow {
   position: absolute;
