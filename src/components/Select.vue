@@ -3,7 +3,7 @@
     :class="{ opened }",
     @click.stop="open"
   )
-    .placeholder Pick one
+    .placeholder {{ placeholder }}
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
       Option First
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import Option from "@/components/Option.vue";
 
 @Component({
@@ -21,6 +21,9 @@ import Option from "@/components/Option.vue";
   }
 })
 export default class Select extends Vue {
+  @Prop({ default: "Pick one", type: String })
+  readonly placeholder!: string;
+
   opened = false;
 
   open() {
