@@ -21,3 +21,7 @@ body {
   left: 0;
   top: 0;
 }
+
+#root > * {
+  width: 300px;
+}
