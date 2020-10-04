@@ -17,4 +17,14 @@ describe("Select.vue", () => {
     });
     expect(wrapper.text()).toMatch(placeholder);
   });
+
+  it("Test custom placeholder slot", () => {
+    const placeholder = "Custom placeholder";
+    const wrapper = shallowMount(Select, {
+      slots: {
+        placeholder: "<h5>Custom placeholder</h5>"
+      }
+    });
+    expect(wrapper.find("h5").text()).toMatch(placeholder);
+  });
 });

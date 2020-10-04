@@ -3,7 +3,8 @@
     :class="{ opened, selected }",
     @click.stop="open"
   )
-    .placeholder {{ selectedText }}
+    slot(v-bind="{ selectedText, selected }", name="placeholder")
+      .placeholder {{ selectedText }}
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
       div(

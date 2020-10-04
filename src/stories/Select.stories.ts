@@ -20,8 +20,7 @@ storiesOf("Select", module)
       selected: ""
     }),
     template: `
-        {{ selected }}
-        <Select v-model="selected" :options="options" />
+        <Select v-model="selected" :options="options" label-key="label" value-key="value" />
       `
   }))
   .add("with string list", () => ({
@@ -33,6 +32,18 @@ storiesOf("Select", module)
       selected: ""
     }),
     template: `
-    <Select v-model="selected" :options="options" />
-  `
+      <Select v-model="selected" :options="options" />
+    `
+  }))
+  .add("custom placeholder", () => ({
+    components: {
+      Select
+    },
+    template: `
+        <Select>
+          <template #placeholder="props">
+            <h3>🙂 {{ props.selectedText }}</h3>
+          </template>
+        </Select>
+      `
   }));
