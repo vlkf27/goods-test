@@ -18,6 +18,15 @@ describe("Select.vue", () => {
     expect(wrapper.text()).toMatch(placeholder);
   });
 
+  it("Check disabled state", () => {
+    const wrapper = shallowMount(Select, {
+      propsData: { disabled: true }
+    });
+    expect(wrapper.classes()).toContain('disabled')
+    wrapper.trigger("click");
+    expect(wrapper.vm.opened).toBe(false);
+  });
+
   it("Test custom placeholder slot", () => {
     const placeholder = "Custom placeholder";
     const wrapper = shallowMount(Select, {

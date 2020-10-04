@@ -35,6 +35,14 @@ storiesOf("Select", module)
       <Select v-model="selected" :options="options" />
     `
   }))
+  .add("disabled", () => ({
+    components: {
+      Select
+    },
+    template: `
+        <Select :disabled="true" />
+      `
+  }))
   .add("custom placeholder", () => ({
     components: {
       Select

@@ -1,6 +1,6 @@
 <template lang="pug">
   .select(
-    :class="{ opened, selected }",
+    :class="{ opened, selected, disabled }",
     @click.stop="open"
   )
     slot(v-bind="{ selectedText, selected }", name="placeholder")
@@ -30,6 +30,9 @@ type OptionItem = Primitive | ObjectItem;
   }
 })
 export default class Select extends Vue {
+  @Prop({ default: false, type: Boolean })
+  readonly disabled!: boolean;
+
   @Prop({ default: () => [], type: Array }) readonly options!: OptionItem[];
 
   @Prop({ default: "Pick one", type: String })
@@ -45,6 +48,10 @@ export default class Select extends Vue {
   readonly value!: Primitive;
 
   opened = false;
+
+  get hasSelected() {
+    return this.selected !== undefined;
+  }
 
   get selected() {
     return this.options.find(
@@ -74,6 +81,9 @@ export default class Select extends Vue {
   }
 
   open() {
+    if (this.disabled) {
+      return;
+    }
     this.opened = true;
   }
   close() {
@@ -125,6 +135,13 @@ $selectRadius: 3px;
   &.selected {
     .placeholder {
       opacity: 1;
+    }
+  }
+  &.disabled {
+    pointer-events: none;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.02);
+    .arrow {
+      filter: grayscale(1);
     }
   }
 }
