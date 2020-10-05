@@ -1,8 +1,20 @@
 <template lang="pug">
   .select(
-    :class="{ opened, selected, disabled }",
+    :class="{ opened, mobile, selected, disabled }",
     @click.stop="open"
   )
+    select(
+      :name="name",
+      :value="value",
+      :disabled="disabled",
+      @input="pick(getOptionByValue($event.target.value))",
+      @focus="open"
+    )
+      option(
+        v-for="option in options",
+        :key="getItemValue(option)",
+        :value="getItemValue(option)",
+      ) {{ getItemText(option) }}
     slot(v-bind="{ selectedText, selected }", name="placeholder")
       .placeholder {{ selectedText }}
     img(class="arrow", src="@/assets/down-arrow.svg")
@@ -17,7 +29,7 @@
           name="option"
         )
           Option(
-            :class="{'cursor-on-option': i === cursor}"
+            :class="{'cursor-on-option': i === cursor, 'is-selected': getItemValue(option) === value}"
           ) {{ getItemText(option) }}
 </template>
 
@@ -31,7 +43,13 @@ import {
   Watch
 } from "vue-property-decorator";
 import Option from "@/components/Option.vue";
-import { KEYS, OptionItem, ObjectItem, Primitive } from "@/components/common";
+import {
+  KEYS,
+  OptionItem,
+  ObjectItem,
+  Primitive,
+  isMobile
+} from "@/components/common";
 
 @Component({
   components: {
@@ -39,6 +57,8 @@ import { KEYS, OptionItem, ObjectItem, Primitive } from "@/components/common";
   }
 })
 export default class Select extends Vue {
+  @Prop({ default: "name", type: String }) readonly name!: string;
+
   @Prop({ default: false, type: Boolean })
   readonly disabled!: boolean;
 
@@ -58,6 +78,7 @@ export default class Select extends Vue {
 
   opened = false;
   cursor = 0;
+  mobile = isMobile();
 
   mounted() {
     this.addDocumentListeners();
@@ -72,15 +93,18 @@ export default class Select extends Vue {
   }
 
   get selected() {
-    return this.options.find(
-      option =>
-        (option as ObjectItem)?.[this.valueKey] === this.value ||
-        option === this.value
-    );
+    return this.getOptionByValue(this.value);
   }
 
   get selectedText() {
     return this.selected?.[this.labelKey] || this.selected || this.placeholder;
+  }
+
+  getOptionByValue(value: Primitive) {
+    return this.options.find(
+      option =>
+        (option as ObjectItem)?.[this.valueKey] === value || option === value
+    );
   }
 
   getItemValue(item: OptionItem) {
@@ -152,7 +176,7 @@ export default class Select extends Vue {
     if (e.keyCode === KEYS.up) {
       this.setCursor(this.cursor - 1);
     }
-    e.preventDefault()
+    e.preventDefault();
   }
 
   documentClickHandler() {
@@ -163,6 +187,20 @@ export default class Select extends Vue {
 
 <style lang="scss" scoped>
 $selectRadius: 3px;
+
+select {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  left: 0;
+  top: 0;
+}
+
+option {
+  display: none;
+}
 
 .select {
   background: #fff;
@@ -193,6 +231,14 @@ $selectRadius: 3px;
       filter: grayscale(1);
     }
   }
+  &.mobile {
+    option {
+      display: block;
+    }
+    .items {
+      display: none;
+    }
+  }
 }
 .placeholder {
   opacity: 0.5;
@@ -208,6 +254,9 @@ $selectRadius: 3px;
 }
 .cursor-on-option {
   background: #f6f6f6;
+}
+.is-selected {
+  font-weight: bold;
 }
 .items {
   display: none;
