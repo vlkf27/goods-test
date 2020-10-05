@@ -11,8 +11,8 @@
       @focus="open"
     )
       option(
-        v-for="option in options",
-        :key="getItemValue(option)",
+        v-for="(option, i) in options",
+        :key="i",
         :value="getItemValue(option)",
       ) {{ getItemText(option) }}
 
@@ -24,7 +24,7 @@
       .no-data(v-if="!options.length") {{ noDataText }}
       div(
         v-for="(option, i) in options",
-        :key="getItemValue(option)",
+        :key="i",
         @click.stop="pick(option)"
       )
         slot(
