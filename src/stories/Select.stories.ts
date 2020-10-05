@@ -68,9 +68,9 @@ storiesOf("Select", module)
     template: `
     <Select v-model="selected" :options="options">
       <template #option="props">
-        <OptionItem>
-          🙂 {{ props.option }}
-        </OptionItem>
+        <Option>
+          {{props.isSelected ? '✅' : '🙂' }} {{ props.option }}
+        </Option>
       </template>
     </Select>
   `

@@ -28,7 +28,7 @@
         @click.stop="pick(option)"
       )
         slot(
-          v-bind="{ selected, option, i, cursorOnOption: cursor === i }",
+          v-bind="{ selected, isSelected: getItemValue(option) === value, option, i, cursorOnOption: cursor === i }",
           name="option"
         )
           Option(
