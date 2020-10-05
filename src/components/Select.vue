@@ -12,17 +12,22 @@
         :key="getItemValue(option)",
         @click.stop="pick(option)"
       )
-        Option {{ getItemText(option) }}
+        Option(
+          :class="{'cursor-on-option': i === cursor}"
+        ) {{ getItemText(option) }}
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Model, Emit } from "vue-property-decorator";
+import {
+  Component,
+  Vue,
+  Prop,
+  Model,
+  Emit,
+  Watch
+} from "vue-property-decorator";
 import Option from "@/components/Option.vue";
-
-type Primitive = string | number;
-
-type ObjectItem = { [key: string]: Primitive };
-type OptionItem = Primitive | ObjectItem;
+import { KEYS, OptionItem, ObjectItem, Primitive } from "@/components/common";
 
 @Component({
   components: {
@@ -48,6 +53,15 @@ export default class Select extends Vue {
   readonly value!: Primitive;
 
   opened = false;
+  cursor = 0;
+
+  mounted() {
+    this.addDocumentListeners();
+  }
+
+  destroyed() {
+    this.removeDocumentListeners();
+  }
 
   get hasSelected() {
     return this.selected !== undefined;
@@ -73,6 +87,24 @@ export default class Select extends Vue {
     return item?.[this.labelKey] || item;
   }
 
+  @Watch("opened")
+  @Watch("selected")
+  private selectedUpdated() {
+    this.setCursor(0);
+  }
+
+  setCursor(cursor: number) {
+    if (cursor >= this.options.length) {
+      this.cursor = 0;
+      return;
+    }
+    if (cursor < 0) {
+      this.cursor = this.options.length - 1;
+      return;
+    }
+    this.cursor = cursor;
+  }
+
   @Emit("change")
   @Emit("input")
   pick(item: OptionItem) {
@@ -90,20 +122,32 @@ export default class Select extends Vue {
     this.opened = false;
   }
 
-  mounted() {
-    this.addDocumentListeners();
-  }
-
-  destroyed() {
-    this.removeDocumentListeners();
-  }
-
   removeDocumentListeners() {
     document.removeEventListener("click", this.documentClickHandler);
+    document.removeEventListener("keydown", this.documentKeydownHandler);
   }
 
   addDocumentListeners() {
     document.addEventListener("click", this.documentClickHandler);
+    document.addEventListener("keydown", this.documentKeydownHandler);
+  }
+
+  documentKeydownHandler(e: KeyboardEvent) {
+    if (!this.opened) {
+      return;
+    }
+    if (e.keyCode === KEYS.esc) {
+      this.close();
+    }
+    if (e.keyCode === KEYS.enter) {
+      this.pick(this.options[this.cursor]);
+    }
+    if (e.keyCode === KEYS.down) {
+      this.setCursor(this.cursor + 1);
+    }
+    if (e.keyCode === KEYS.up) {
+      this.setCursor(this.cursor - 1);
+    }
   }
 
   documentClickHandler() {
@@ -156,6 +200,9 @@ $selectRadius: 3px;
   width: 15px;
   height: auto;
   transition: all 300ms;
+}
+.cursor-on-option {
+  background: #f6f6f6;
 }
 .items {
   display: none;
