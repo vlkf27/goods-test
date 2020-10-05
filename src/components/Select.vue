@@ -8,6 +8,7 @@
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
       div(
+        v-for="(option, i) in options",
         :key="getItemValue(option)",
         @click.stop="pick(option)"
       )
@@ -151,6 +152,7 @@ export default class Select extends Vue {
     if (e.keyCode === KEYS.up) {
       this.setCursor(this.cursor - 1);
     }
+    e.preventDefault()
   }
 
   documentClickHandler() {
