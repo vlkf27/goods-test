@@ -1,6 +1,7 @@
 import { storiesOf } from "@storybook/vue";
 import Select from "@/components/Select.vue";
 import { options, stringOptions } from "@/assets/options";
+import Option from "@/components/Option.vue";
 
 storiesOf("Select", module)
   .add("default", () => ({
@@ -54,4 +55,23 @@ storiesOf("Select", module)
           </template>
         </Select>
       `
+  }))
+  .add("custom option", () => ({
+    components: {
+      Select,
+      Option
+    },
+    data: () => ({
+      options: stringOptions,
+      selected: ""
+    }),
+    template: `
+    <Select v-model="selected" :options="options">
+      <template #option="props">
+        <OptionItem>
+          🙂 {{ props.option }}
+        </OptionItem>
+      </template>
+    </Select>
+  `
   }));

@@ -8,13 +8,16 @@
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
       div(
-        v-for="option in options",
         :key="getItemValue(option)",
         @click.stop="pick(option)"
       )
-        Option(
-          :class="{'cursor-on-option': i === cursor}"
-        ) {{ getItemText(option) }}
+        slot(
+          v-bind="{ selected, option, i, cursorOnOption: cursor === i }",
+          name="option"
+        )
+          Option(
+            :class="{'cursor-on-option': i === cursor}"
+          ) {{ getItemText(option) }}
 </template>
 
 <script lang="ts">

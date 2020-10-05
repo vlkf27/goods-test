@@ -36,4 +36,19 @@ describe("Select.vue", () => {
     });
     expect(wrapper.find("h5").text()).toMatch(placeholder);
   });
+
+
+  it("Test custom placeholder slot", () => {
+    const optionText = "Custom placeholder";
+    const wrapper = shallowMount(Select, {
+      slots: {
+        option: `<h5>${optionText}</h5>`
+      },
+      propsData: {
+        options: ['hello']
+      }
+    });
+    wrapper.trigger("click");
+    expect(wrapper.find("h5").text()).toMatch(optionText);
+  });
 });
