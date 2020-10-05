@@ -38,6 +38,16 @@ describe("Select.vue", () => {
   });
 
 
+  it("Test custom no-data prop", () => {
+    const text = "Custom no data";
+    const wrapper = shallowMount(Select, {
+      propsData: {
+        noDataText: text
+      }
+    });
+    expect(wrapper.find(".no-data").text()).toMatch(text);
+  });
+
   it("Test custom placeholder slot", () => {
     const optionText = "Custom placeholder";
     const wrapper = shallowMount(Select, {

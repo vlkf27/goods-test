@@ -9,7 +9,7 @@ storiesOf("Select", module)
       Select
     },
     template: `
-      <Select placeholder="Placeholder" />
+      <Select placeholder="Placeholder" no-data-text="Custom no data" />
   `
   }))
   .add("with object list", () => ({

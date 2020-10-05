@@ -19,6 +19,7 @@
       .placeholder {{ selectedText }}
     img(class="arrow", src="@/assets/down-arrow.svg")
     .items
+      .no-data(v-if="!options.length") {{ noDataText }}
       div(
         v-for="(option, i) in options",
         :key="getItemValue(option)",
@@ -57,6 +58,8 @@ import {
   }
 })
 export default class Select extends Vue {
+  @Prop({ default: "No data", type: String }) readonly noDataText!: string;
+
   @Prop({ default: "name", type: String }) readonly name!: string;
 
   @Prop({ default: false, type: Boolean })
@@ -272,5 +275,14 @@ option {
 
   border-bottom-right-radius: $selectRadius;
   border-bottom-left-radius: $selectRadius;
+}
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background: #f6f6f6;
+  color: #999;
 }
 </style>
