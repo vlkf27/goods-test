@@ -15,9 +15,11 @@
         :key="getItemValue(option)",
         :value="getItemValue(option)",
       ) {{ getItemText(option) }}
+
     slot(v-bind="{ selectedText, selected }", name="placeholder")
       .placeholder {{ selectedText }}
     img(class="arrow", src="@/assets/down-arrow.svg")
+
     .items
       .no-data(v-if="!options.length") {{ noDataText }}
       div(
